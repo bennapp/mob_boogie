@@ -1,45 +1,67 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
 //= require flipclock.min
 
 class Player
   createClock: ->
-    seconds = (20 * 60)
-    @clock = $('#clock').FlipClock(seconds, { clockFace: 'MinuteCounter', countdown: true, autoStart: false })
+    @clock = $('#clock').FlipClock(@seconds, { clockFace: 'MinuteCounter', countdown: true, autoStart: false })
 
-  initYouTube: =>
-    youTubeDeferred = $.Deferred();
-    window.onYouTubeIframeAPIReady = ->
-      youTubeDeferred.resolve(window.YT)
+  constructor: ->
+    @initYouTube()
+    @createClock()
+    @setUpButtons()
 
-    tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    @$time_input = $('#time_input')
+    @$time_input.on 'keyup', @onTimeEdit
 
-    youTubeDeferred.done =>
-      player = new YT.Player 'player',
+    @getTimeInput()
+
+    window.player = this
+
+  setUpButtons: ->
+    $('#start_timer').on('click', @startTimer)
+    $('#pause_timer').on('click', @pauseTimer)
+    $('#reset_timer').on('click', @resetTimer)
+
+  getTimeInput: ->
+    @seconds = parseInt(@$time_input.val())
+    @$time_input.val(@seconds)
+    @clock.setTime(@seconds)
+
+  startTimer: =>
+    @clock.start(@onTick)
+
+  pauseTimer: =>
+    @clock.stop()
+
+  resetTimer: =>
+    @getTimeInput()
+    @video.pauseVideo()
+
+  onTimeEdit: =>
+    @getTimeInput() unless @clock.running
+
+  onTick: =>
+    if @clock.getTime().time == 0
+       @timesUp()
+
+  timesUp: ->
+    @video.playVideo()
+
+  initYouTube: ->
+    window.onYouTubeIframeAPIReady = =>
+      new YT.Player 'player',
         height: '390'
         width: '640'
         videoId: 'GtUVQei3nX4'
         events: {
-          'onReady': @setPlayer
+          'onReady': (event) => @video = event.target
         }
 
-  setPlayer: (event) =>
-    @video = event.target
+    @_setYouTubeOnWindow()
 
-  play: ->
-    @initYouTube() # @video, We have a loading problem with video do we care?
-    @createClock() # @clock
-
-    window.player = this
-
-#    player.clock.start()
-#    player.clock.stop()
-
-#    player.video.playVideo()
-#    player.video.stopVideo()
+  _setYouTubeOnWindow: ->
+    tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 window.Player = Player
