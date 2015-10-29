@@ -3,6 +3,10 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 //= require flipclock.min
 
-$(document).ready ->
-  clock = $('.clock').FlipClock((20 * 60), { clockFace: 'MinuteCounter', countdown: true })
+class Player
+  play: ->
+    clock = $('.clock').FlipClock((20 * 60), { clockFace: 'MinuteCounter', countdown: true })
 
+
+
+window.Player = Player
