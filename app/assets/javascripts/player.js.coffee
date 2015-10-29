@@ -4,8 +4,20 @@
 //= require flipclock.min
 
 class Player
+  createClock: ->
+    seconds = (20 * 60)
+    $('.clock').FlipClock(seconds, { clockFace: 'MinuteCounter', countdown: true })
+
+  initYouTube: ->
+    tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
   play: ->
-    clock = $('.clock').FlipClock((20 * 60), { clockFace: 'MinuteCounter', countdown: true })
+#    initYouTube()
+    clock = @createClock()
+    video = @createVideo()
 
 
 

@@ -18,6 +18,14 @@
 .parent {
     display: flex;
     justify-content: center;
-    align-items: center;
-    height:60vh;
+    /*align-items: center;*/
+    /*height: 60vh;*/
+}
+
+.child {
+    height: 390px;
+}
+
+.clock.flip-clock-wrapper {
+    margin-left: 172px;
 }
