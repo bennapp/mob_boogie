@@ -2,17 +2,12 @@
 
 class Player
   createClock: ->
-    @clock = $('#clock').FlipClock(@seconds, { clockFace: 'MinuteCounter', countdown: true, autoStart: false })
+    @clock = $('#clock').FlipClock(parseInt($('#time_input').val()), { clockFace: 'MinuteCounter', countdown: true, autoStart: false })
 
   constructor: ->
     @initYouTube()
     @createClock()
     @setUpButtons()
-
-    @$time_input = $('#time_input')
-    @$time_input.on 'keyup', @onTimeEdit
-
-    @getTimeInput()
 
     window.player = this
 
@@ -20,10 +15,10 @@ class Player
     $('#start_timer').on('click', @startTimer)
     $('#pause_timer').on('click', @pauseTimer)
     $('#reset_timer').on('click', @resetTimer)
+    $('#set_time').on('click', @getTimeInput)
 
-  getTimeInput: ->
-    @seconds = parseInt(@$time_input.val())
-    @$time_input.val(@seconds)
+  getTimeInput: =>
+    @seconds = parseInt($('#time_input').val())
     @clock.setTime(@seconds)
 
   startTimer: =>
@@ -35,9 +30,6 @@ class Player
   resetTimer: =>
     @getTimeInput()
     @video.pauseVideo()
-
-  onTimeEdit: =>
-    @getTimeInput() unless @clock.running
 
   onTick: =>
     if @clock.getTime().time == 0
