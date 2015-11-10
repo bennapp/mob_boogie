@@ -33,7 +33,7 @@ class Player
 
   onTick: =>
     if @clock.getTime().time == 0
-       @timesUp()
+      @timesUp()
 
   timesUp: ->
     @video.playVideo()
